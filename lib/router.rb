@@ -29,14 +29,11 @@ class Router
   end
 
   def find_first_matching_route(env)
-    route = nil
-    @routes.each do |testRoute|
+    @routes.detect do |testRoute|
       if testRoute.matches env
         route = testRoute
-        break
       end
     end
-    route
   end
 
   # magically generate helpers for http methods
