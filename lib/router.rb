@@ -2,8 +2,11 @@ class Route
   def initialize(methods,mode,regexp,handler)
     @methods = methods
     @mode = mode
-    # ensure it's a regexp, this has no effect if it's already a regexp
-    @regexp = Regexp.new regexp
+    @regexp = if regexp.class == String
+      Regexp.new "^" + regexp + "$"
+    else
+      regexp
+    end
     @handler = handler
   end
 
