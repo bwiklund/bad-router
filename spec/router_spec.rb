@@ -6,9 +6,9 @@ describe Router do
     @router = Router.new
   end
 
-  # helper to dry up these cases
   def expect_request_status(path,verb,status)
-    @router.call('PATH_INFO' => path,'REQUEST_METHOD' => verb.to_s)[0].should == status
+    response = @router.call('PATH_INFO' => path,'REQUEST_METHOD' => verb.to_s)
+    response[0].should == status
   end
 
   it "should exist" do
@@ -50,5 +50,12 @@ describe Router do
     expect_request_status '/', 'GET', 200
     expect_request_status '/', 'POST', 200
     expect_request_status '/', 'DELETE', 404
+  end
+
+  it "can exclude certain verbs" do
+    @router.except [:GET,:POST], '/' do [200,{},[["ok"]]] end
+    expect_request_status '/', 'GET', 404
+    expect_request_status '/', 'POST', 404
+    expect_request_status '/', 'DELETE', 200
   end
 end
