@@ -1,14 +1,17 @@
 class Route
-  attr_reader :handler
-
-  def initialize(methods,regexp,handler)
+  def initialize(methods,mode,regexp,handler)
     @methods = methods
-    @regexp = regexp
+    @mode = mode
+    # ensure it's a regexp, this has no effect if it's already a regexp
+    @regexp = Regexp.new regexp
     @handler = handler
   end
 
   def matches(env)
-    env['PATH_INFO'] =~ @regexp and @methods.include? env['REQUEST_METHOD'].to_sym
+    matches_path = env['PATH_INFO'] =~ @regexp
+    matches_method = @methods.include? env['REQUEST_METHOD'].to_sym
+    @mode == :EXCLUDE and matches_method ^= 1
+    matches_path and matches_method
   end
 
   def call(env)
@@ -42,9 +45,20 @@ class Router
 
   # magically generate helpers for http methods
   %i(GET POST PUT PATCH DELETE OPTIONS TRACE CONNECT).each do |method|
-    define_method method.downcase do |regexpOrString,&handler|
-      regexp = Regexp.new regexpOrString
-      @routes << Route.new([method],regexp,handler)
+    define_method method.downcase do |regexp,&handler|
+      @routes << Route.new([method],:INCLUDE,regexp,handler)
     end
+  end
+
+  def methods(methods,regexp,&handler)
+    @routes << Route.new(methods,:INCLUDE,regexp,handler)
+  end
+
+  def all(regexp,&handler)
+    @routes << Route.new([],:EXCLUDE,regexp,handler)
+  end
+
+  def except(methods,regexp,&handler)
+    @routes << Route.new(methods,:EXCLUDE,regexp,handler)
   end
 end
