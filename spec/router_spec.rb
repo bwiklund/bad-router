@@ -22,8 +22,13 @@ describe Router do
     expect_request_status '/', 'GET', 404
   end
 
-  it "should be able to route based on regex" do
+  it "should be able to route based on string" do
     @router.get '/' do [200,{},["acceptable."]] end
+    expect_request_status '/', 'GET', 200
+  end
+
+  it "should be able to route based on regex" do
+    @router.get // do [200,{},["acceptable."]] end
     expect_request_status '/', 'GET', 200
   end
 
