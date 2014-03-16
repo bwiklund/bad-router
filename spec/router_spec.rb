@@ -17,9 +17,19 @@ describe Router do
     response[0].should == 200
   end
 
+  it "should be able to route paths other than /" do
+    router = Router.new
+    router.get "/foo" do [500,{},"bad."] end
+    router.get "/bar" do [200,{},"good."] end
+    router.get "/baz" do [500,{},"bad."] end
+    router.call(REQUEST_PATH:'/foo',REQUEST_METHOD:'GET')[2].should == "bad."
+    router.call(REQUEST_PATH:'/bar',REQUEST_METHOD:'GET')[2].should == "good."
+    router.call(REQUEST_PATH:'/baz',REQUEST_METHOD:'GET')[2].should == "bad."
+  end
+
   it "should be able to route based on method" do
     router = Router.new
-    router.get '/' do [200,{},"bad."] end
+    router.get '/' do [500,{},"bad."] end
     router.post '/' do [200,{},"good!"] end
     response = router.call(REQUEST_PATH:'/',REQUEST_METHOD:'POST')
     response[2].should == "good!"
