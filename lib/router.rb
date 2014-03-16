@@ -39,14 +39,11 @@ class Router
     route
   end
 
-  # helper for brevity
-  def get(regexpOrString,&handler)
-    regexp = Regexp.new regexpOrString
-    @routes << Route.new([:GET],regexp,handler)
-  end
-
-  def post(regexpOrString,&handler)
-    regexp = Regexp.new regexpOrString
-    @routes << Route.new([:POST],regexp,handler)
+  # magically generate helpers for http methods
+  %i(GET POST PUT PATCH DELETE OPTIONS TRACE CONNECT).each do |method|
+    define_method method.downcase do |regexpOrString,&handler|
+      regexp = Regexp.new regexpOrString
+      @routes << Route.new([method],regexp,handler)
+    end
   end
 end
