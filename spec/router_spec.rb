@@ -12,7 +12,7 @@ describe Router do
   end
 
   it "should exist" do
-    @router.nil?.should == false
+    @router.should_not be_nil
   end
 
   it "should respond 404 if no routes are set" do
