@@ -44,4 +44,9 @@ class Router
     regexp = Regexp.new regexpOrString
     @routes << Route.new([:GET],regexp,handler)
   end
+
+  def post(regexpOrString,&handler)
+    regexp = Regexp.new regexpOrString
+    @routes << Route.new([:POST],regexp,handler)
+  end
 end
