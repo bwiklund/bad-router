@@ -1,6 +1,6 @@
 class Route
   attr_reader :handler
-  
+
   def initialize(methods,regexp,handler)
     @methods = methods
     @regexp = regexp
@@ -19,6 +19,16 @@ class Router
   end
 
   def call(env)
+    route = find_first_matching_route env
+
+    if route.nil?
+      [404,{},"unacceptable."]
+    else
+      route.handler.call
+    end
+  end
+
+  def find_first_matching_route(env)
     route = nil
     @routes.each do |testRoute|
       if testRoute.matches env
@@ -26,12 +36,7 @@ class Router
         break
       end
     end
-
-    if route.nil?
-      [404,{},"unacceptable."]
-    else
-      route.handler.call
-    end
+    route
   end
 
   # helper for brevity
