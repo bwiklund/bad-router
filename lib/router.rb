@@ -8,7 +8,7 @@ class Route
   end
 
   def matches(env)
-    env[:REQUEST_PATH] =~ @regexp and @methods.include? env[:REQUEST_METHOD].to_sym
+    env['PATH_INFO'] =~ @regexp and @methods.include? env['REQUEST_METHOD'].to_sym
   end
 
   def call(env)
@@ -26,7 +26,7 @@ class Router
     route = find_first_matching_route env
 
     if route.nil?
-      [404,{},"unacceptable."]
+      [404,{},["unacceptable."]]
     else
       route.call env
     end
