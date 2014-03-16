@@ -10,6 +10,10 @@ class Route
   def matches(env)
     env[:REQUEST_PATH] =~ @regexp and @methods.include? env[:REQUEST_METHOD].to_sym
   end
+
+  def call(env)
+    @handler.call
+  end
 end
 
 
@@ -24,7 +28,7 @@ class Router
     if route.nil?
       [404,{},"unacceptable."]
     else
-      route.handler.call
+      route.call env
     end
   end
 
