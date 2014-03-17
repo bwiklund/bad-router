@@ -1,4 +1,5 @@
 source "https://rubygems.org"
 
+gem "bundler"
 gem "rspec"
-gem 'simplecov', '~> 0.7.1'
+gem "simplecov"
