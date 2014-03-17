@@ -1,7 +1,7 @@
 require 'rack'
 require './lib/router'
 
-router = Router.new
+router = BadRouter::Router.new
 
 router.get "/" do
   [200,{},["hello!"]]

@@ -3,10 +3,10 @@ SimpleCov.start
 
 require './lib/router'
 
-describe Router do
+describe BadRouter::Router do
 
   before :each do
-    @router = Router.new
+    @router = BadRouter::Router.new
   end
 
   def expect_request_status(path,verb,status)
