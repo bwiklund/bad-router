@@ -13,7 +13,7 @@ class Route
   def matches(env)
     matches_path = env['PATH_INFO'] =~ @regexp
     matches_method = @methods.include? env['REQUEST_METHOD'].to_sym
-    @mode == :EXCLUDE and matches_method ^= 1
+    if @mode == :EXCLUDE then matches_method ^= 1 end
     matches_path and matches_method
   end
 
