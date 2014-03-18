@@ -40,30 +40,30 @@ module BadRouter
     end
 
     def find_first_matching_route(env)
-      @routes.detect do |testRoute|
-        if testRoute.matches env
-          route = testRoute
-        end
-      end
+      @routes.detect { |testRoute| testRoute.matches env }
+    end
+
+    def add_route(route)
+      @routes << route
     end
 
     # magically generate helpers for http methods
     %i(GET POST PUT PATCH DELETE OPTIONS TRACE CONNECT).each do |method|
       define_method method.downcase do |regexp,&handler|
-        @routes << Route.new([method],:INCLUDE,regexp,handler)
+        add_route Route.new([method],:INCLUDE,regexp,handler)
       end
     end
 
     def methods(methods,regexp,&handler)
-      @routes << Route.new(methods,:INCLUDE,regexp,handler)
+      add_route Route.new(methods,:INCLUDE,regexp,handler)
     end
 
     def all(regexp,&handler)
-      @routes << Route.new([],:EXCLUDE,regexp,handler)
+      add_route Route.new([],:EXCLUDE,regexp,handler)
     end
 
     def except(methods,regexp,&handler)
-      @routes << Route.new(methods,:EXCLUDE,regexp,handler)
+      add_route Route.new(methods,:EXCLUDE,regexp,handler)
     end
   end
 end
